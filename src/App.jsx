@@ -9,10 +9,16 @@ function ChatBox() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
 
+  function chatResponse(userInput){
+    const randomChars = Math.random().toString(36).substring(2, 7)
+    
+    return `You said: ${userInput} | random code: ${randomChars}`
+  }
+
   function sendMessage() {
     if (input.trim() === "") {
       return
-    }
+  }
 
     const userMessage = {
       sender: "user",
@@ -21,7 +27,7 @@ function ChatBox() {
 
     const botMessage = {
       sender: "bot",
-      text: "This is a dummy response"
+      text: chatResponse(input)
     }
 
     setMessages([...messages, userMessage, botMessage])
