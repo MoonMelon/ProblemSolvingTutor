@@ -9,8 +9,6 @@ export default function TopBar({ title, onMenuToggle, onBotToggle, botOpen }) {
       </div>
 
       <div className="topbar-right">
-        <span className="pill">🔥 Streak 5</span>
-        <span className="pill">AMC 10</span>
         <button
           className={`btn sm ${botOpen ? 'secondary' : ''}`}
           onClick={onBotToggle}

@@ -226,7 +226,7 @@ p { margin: 0 0 8px; }
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: 14px;
   box-shadow: var(--shadow-sm);
 }
 
