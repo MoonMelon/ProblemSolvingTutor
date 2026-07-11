@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ProofPath Dual-Track Prototype</title>
+<style>
+:root{
+ --ink:#172033;--muted:#667085;--line:#d9dfeb;--bg:#f4f7fb;--paper:#fff;
+ --concept:#6c4df6;--speed:#e87518;--good:#16825d;--warn:#a36500;--bad:#b42318;
+}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
+.side{background:#101827;color:#fff;padding:18px 13px;position:sticky;top:0;height:100vh}
+.brand{font-size:22px;font-weight:850;padding:7px 10px 18px}.brand small{display:block;color:#9eabc0;font-size:11px;font-weight:500;margin-top:4px}
+.nav button{display:block;width:100%;border:0;background:transparent;color:#d6deea;text-align:left;padding:11px;border-radius:10px;margin:3px 0}
+.nav button.active,.nav button:hover{background:#253149;color:#fff}
+.profile{position:absolute;bottom:18px;left:14px;right:14px;border:1px solid #344154;border-radius:12px;padding:11px;font-size:12px;color:#c8d1df}
+.main{min-width:0}.top{height:66px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 23px}
+.top h1{font-size:19px;margin:0}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.between{justify-content:space-between}
+.pill,.tag{display:inline-flex;align-items:center;border:1px solid var(--line);background:white;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:700}
+.tag.concept{background:#f0edff;color:#5134ce;border-color:#d5ccff}.tag.speed{background:#fff1e4;color:#aa4d07;border-color:#ffd1aa}
+.tag.good{background:#e8f7f0;color:var(--good);border-color:#b8e8d2}.tag.warn{background:#fff6dd;color:var(--warn);border-color:#f3d486}
+.content{max-width:1500px;margin:auto;padding:22px}.screen{display:none}.screen.active{display:block}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:0 2px 10px rgba(25,35,50,.04)}
+.grid{display:grid;gap:15px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+h2,h3{margin-top:0}.muted{color:var(--muted)}.label{text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:800;color:var(--muted)}
+.metric{font-size:30px;font-weight:850;margin:5px 0}.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:750;background:#315efb;color:white}.btn.secondary{background:white;color:var(--ink);border:1px solid var(--line)}
+.btn.concept{background:var(--concept)}.btn.speed{background:var(--speed)}
+.progress{height:8px;border-radius:99px;background:#e9edf4;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%}.pc span{background:var(--concept)}.ps span{background:var(--speed)}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:12px}.track{border-radius:14px;padding:14px;border:1px solid var(--line)}.track.concept{background:#f7f5ff}.track.speed{background:#fff8f1}
+.track .metric{font-size:36px}.delta{font-size:12px;font-weight:750}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.list{display:grid;gap:9px}.item{border:1px solid var(--line);border-radius:11px;padding:12px;background:white}
+.modebar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}.modebar button{border:1px solid var(--line);background:#fff;padding:10px;border-radius:10px;font-weight:700}.modebar button.active{border-color:#7892ff;background:#eef2ff;color:#2844a0}
+.workspace{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(390px,1.25fr) minmax(300px,.8fr);gap:14px;align-items:start}
+.sticky{position:sticky;top:84px}.math{padding:13px;background:#f7f9fc;border-radius:10px;text-align:center;font-size:20px;margin:10px 0}
+.timeline{display:grid;gap:9px}.step{border-left:4px solid #bdc7d6;background:#fff;border-radius:0 10px 10px 0;padding:11px}.step.concept{border-color:var(--concept);background:#f8f6ff}.step.speed{border-color:var(--speed);background:#fff8f1}
+textarea{width:100%;min-height:95px;border:1px solid var(--line);border-radius:10px;padding:11px;resize:vertical}
+.coach{border:1px solid #c9d6ff;background:#eff4ff;border-radius:12px;padding:13px;line-height:1.5}
+.decision{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.decision button{border:1px solid var(--line);border-radius:10px;background:white;padding:10px;text-align:left}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.scorecard{display:grid;grid-template-columns:130px 1fr;gap:16px}.radar{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--concept) 0 48%,var(--speed) 48% 75%,#e9edf4 75%);display:grid;place-items:center;position:relative}.radar:after{content:"";position:absolute;inset:17px;border-radius:50%;background:white}.radar b{z-index:1;font-size:17px}
+.strategy{border:1px solid var(--line);border-radius:12px;padding:13px}.strategy.recommended{border-color:#849aff;background:#f4f7ff}.bars{display:grid;gap:6px;margin-top:9px}.barrow{display:grid;grid-template-columns:105px 1fr 34px;align-items:center;gap:7px;font-size:11px}
+.microbar{height:6px;background:#e8edf4;border-radius:9px;overflow:hidden}.microbar span{display:block;height:100%;background:#637083}
+.selector{display:flex;gap:7px}.selector button{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:white}.selector button.active{background:#eef2ff;border-color:#9cb0ff}
+.note{border-left:4px solid #315efb;background:#f3f6ff;padding:12px;border-radius:0 10px 10px 0}
+@media(max-width:1100px){.app{grid-template-columns:80px 1fr}.brand{font-size:14px}.brand small,.nav .txt,.profile{display:none}.nav button{text-align:center}.workspace{grid-template-columns:1fr 1.2fr}.coachcol{grid-column:1/-1}.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.app{display:block}.side{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;z-index:10;padding:5px}.brand,.profile{display:none}.nav{display:grid;grid-template-columns:repeat(6,1fr)}.nav button{font-size:10px;text-align:center;padding:7px 2px}.nav .txt{display:block;font-size:8px}.content{padding:12px 12px 77px}.g2,.g3,.g4,.workspace,.dual{grid-template-columns:1fr}.sticky{position:static}.coachcol{grid-column:auto}.top{padding:0 13px}.modebar{grid-template-columns:1fr 1fr}.scorecard{grid-template-columns:1fr}.radar{margin:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">ProofPath<small>Deep understanding. Fast execution.</small></div>
+  <div class="nav">
+    <button class="active" data-page="home">⌂ <span class="txt">Dashboard</span></button>
+    <button data-page="practice">✎ <span class="txt">Practice</span></button>
+    <button data-page="trackers">◫ <span class="txt">Trackers</span></button>
+    <button data-page="strategy">⇆ <span class="txt">Strategies</span></button>
+    <button data-page="history">↶ <span class="txt">History</span></button>
+    <button data-page="plan">⇢ <span class="txt">Plan</span></button>
+  </div>
+  <div class="profile"><b>Maya S.</b><br>AMC 10 → AIME track<br>Goal date: November 2026</div>
+</aside>
+<main class="main">
+<header class="top"><h1 id="title">Dual-track dashboard</h1><div class="row"><span class="pill">Streak 5</span><span class="pill">Coach: Adaptive</span></div></header>
+<div class="content">
+
+<section id="home" class="screen active">
+ <div class="row between" style="margin-bottom:14px"><div><h2 style="margin:0">Build deeply, then compress for speed</h2><div class="muted">The two trackers are scored separately and combined only for planning.</div></div><button class="btn" onclick="go('practice')">Continue session</button></div>
+ <div class="dual">
+  <div class="track concept">
+   <div class="row between"><span class="tag concept">Concept track</span><span class="delta good">+6 this month</span></div>
+   <div class="metric">72</div><b>Structural understanding</b>
+   <div class="progress pc"><span style="width:72%"></span></div>
+   <p class="muted">Can explain why a method works, recognize transfer, justify conditions, and compare alternatives.</p>
+  </div>
+  <div class="track speed">
+   <div class="row between"><span class="tag speed">Speed track</span><span class="delta good">+9 this month</span></div>
+   <div class="metric">61</div><b>Contest execution</b>
+   <div class="progress ps"><span style="width:61%"></span></div>
+   <p class="muted">Can recognize a useful path quickly, execute accurately, abandon weak paths, and verify within time.</p>
+  </div>
+ </div>
+ <div class="grid g3" style="margin-top:15px">
+  <div class="card"><div class="label">Concept bottleneck</div><div class="metric" style="font-size:21px">Invariant selection</div><span class="tag concept">Needs transfer</span></div>
+  <div class="card"><div class="label">Speed bottleneck</div><div class="metric" style="font-size:21px">Late commitment</div><span class="tag speed">+2.4 min/problem</span></div>
+  <div class="card"><div class="label">Balanced readiness</div><div class="metric">64</div><div class="muted">Useful only as a planning summary</div></div>
+ </div>
+ <div class="grid g2" style="margin-top:15px">
+  <div class="card"><h3>Today’s paired workout</h3>
+   <div class="list">
+    <div class="item"><span class="tag concept">Deep pass</span><b> Explain why residue cycles work</b><div class="muted">Untimed · compare two methods · identify failure conditions</div></div>
+    <div class="item"><span class="tag speed">Compression pass</span><b> Solve 4 last-digit problems</b><div class="muted">8 minutes · recognition target under 40 seconds</div></div>
+    <div class="item"><span class="tag good">Bridge</span><b> State your contest trigger</b><div class="muted">“Large exponent + small modulus → test residue cycle.”</div></div>
+   </div>
+  </div>
+  <div class="card"><h3>Coach recommendation</h3>
+   <div class="note">You understand modular cycles when prompted, but strategy recognition is slow. Do one deep explanation first, then repeat the same structural pattern under time pressure.</div>
+   <table style="margin-top:10px"><tr><td>Deep-work share</td><td>45%</td></tr><tr><td>Timed-work share</td><td>40%</td></tr><tr><td>Reflection share</td><td>15%</td></tr></table>
+  </div>
+ </div>
+</section>
+
+<section id="practice" class="screen">
+ <div class="modebar">
+  <button class="active" onclick="mode(this,'explore')">Explore deeply</button>
+  <button onclick="mode(this,'compress')">Compress method</button>
+  <button onclick="mode(this,'contest')">Contest simulation</button>
+  <button onclick="mode(this,'reflect')">Reflect & compare</button>
+ </div>
+ <div class="workspace">
+  <div class="card sticky">
+   <span class="tag">AMC 10 · Number theory</span>
+   <h3 style="margin-top:10px">Power remainder</h3>
+   <p>Find the remainder when <b>7<sup>2026</sup> + 3<sup>2026</sup></b> is divided by 10.</p>
+   <div class="math">\(7^{2026}+3^{2026}\pmod {10}\)</div>
+   <div class="label">Session objectives</div>
+   <p><span class="tag concept">Explain full-cycle verification</span></p>
+   <p><span class="tag speed">Recognize cycle method in 40 sec</span></p>
+   <hr style="border:0;border-top:1px solid var(--line)">
+   <div id="timer" class="metric" style="font-size:24px">Untimed</div>
+   <div class="muted" id="modePurpose">Optimize for explanation, transfer, and correct conditions.</div>
+  </div>
+  <div>
+   <div class="card">
+    <div class="row between"><h3>Your reasoning</h3><span class="pill">Autosaved</span></div>
+    <div class="timeline">
+     <div class="step concept"><b>Concept evidence</b><div>You proposed looking for a repeating last-digit pattern.</div><span class="tag good">Correct structural choice</span></div>
+     <div class="step speed"><b>Speed evidence</b><div>Strategy selected after 74 seconds.</div><span class="tag warn">Target: 40 seconds</span></div>
+     <div class="step"><b>Current step</b><div>Explain what proves that the cycle is complete.</div></div>
+    </div>
+    <textarea>I should list 7, 9, 3, 1 and check that multiplying by 7 gives 7 again, so the state restarts.</textarea>
+    <div class="row between" style="margin-top:9px"><span class="muted">Voice · scan · pencil also available</span><button class="btn" onclick="submitThinking()">Submit thinking</button></div>
+   </div>
+   <div class="card" style="margin-top:14px">
+    <div class="row between"><h3>Two-way coach decision</h3><div><span class="tag concept">Concept</span> <span class="tag speed">Speed</span></div></div>
+    <table>
+     <tr><th>Evidence</th><th>Current conclusion</th><th>Next intervention</th></tr>
+     <tr><td>Concept</td><td>Understands periodicity but must justify closure</td><td>Ask for proof of restart</td></tr>
+     <tr><td>Speed</td><td>Correct path chosen too slowly</td><td>Create a trigger phrase after solving</td></tr>
+    </table>
+   </div>
+  </div>
+  <div class="coachcol">
+   <div class="card sticky">
+    <div class="row between"><h3>Thinking Coach</h3><span id="coachMode" class="tag concept">Explore mode</span></div>
+    <div id="coachText" class="coach">You found the useful strategy. What exactly must repeat—the last value alone, or the complete multiplication state? Explain why the fifth last digit confirms the cycle.</div>
+    <div class="decision">
+      <button><b>Go deeper</b><br><span class="muted">Why does this work?</span></button>
+      <button><b>Make it faster</b><br><span class="muted">Build a recognition trigger</span></button>
+      <button><b>Try another path</b><br><span class="muted">Compare Euler reduction</span></button>
+      <button><b>Contest test</b><br><span class="muted">Restart with a timer</span></button>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="trackers" class="screen">
+ <div class="grid g2">
+  <div class="card">
+   <div class="row between"><h2>Concept tracker</h2><span class="tag concept">Understanding</span></div>
+   <table><thead><tr><th>Dimension</th><th>Score</th><th>Evidence</th></tr></thead><tbody>
+    <tr><td>Concept recognition</td><td>76</td><td>Finds relevant ideas when untimed</td></tr>
+    <tr><td>Why / justification</td><td>68</td><td>Sometimes omits required conditions</td></tr>
+    <tr><td>Transfer</td><td>59</td><td>Needs unfamiliar-form practice</td></tr>
+    <tr><td>Alternative comparison</td><td>73</td><td>Can discuss tradeoffs after solving</td></tr>
+    <tr><td>Retention</td><td>81</td><td>Stable over 30 days</td></tr>
+   </tbody></table>
+  </div>
+  <div class="card">
+   <div class="row between"><h2>Speed tracker</h2><span class="tag speed">Execution</span></div>
+   <table><thead><tr><th>Dimension</th><th>Score</th><th>Evidence</th></tr></thead><tbody>
+    <tr><td>Problem triage</td><td>66</td><td>Selects solvable problems reasonably</td></tr>
+    <tr><td>Strategy-recognition latency</td><td>52</td><td>Median 74 sec; target 40 sec</td></tr>
+    <tr><td>Execution fluency</td><td>69</td><td>Few pauses after committing</td></tr>
+    <tr><td>Abandon / switch decision</td><td>48</td><td>Stays with weak paths too long</td></tr>
+    <tr><td>Timed verification</td><td>71</td><td>Checks answer when time permits</td></tr>
+   </tbody></table>
+  </div>
+ </div>
+ <div class="card" style="margin-top:15px">
+  <h3>Cross-track diagnostic matrix</h3>
+  <table><thead><tr><th>Concept</th><th>Deep mastery</th><th>Recognition speed</th><th>Execution speed</th><th>Recommended workout</th></tr></thead><tbody>
+   <tr><td>Residue cycles</td><td>78</td><td>51</td><td>74</td><td>Recognition sprints</td></tr>
+   <tr><td>Parity / invariants</td><td>46</td><td>43</td><td>58</td><td>Concept repair before timing</td></tr>
+   <tr><td>Similar triangles</td><td>75</td><td>70</td><td>68</td><td>Mixed timed transfer</td></tr>
+   <tr><td>Strategic casework</td><td>61</td><td>56</td><td>49</td><td>Case-design compression</td></tr>
+  </tbody></table>
+ </div>
+</section>
+
+<section id="strategy" class="screen">
+ <div class="row between" style="margin-bottom:14px"><div><h2 style="margin:0">Strategy comparison</h2><div class="muted">Compare conceptual value and contest utility separately.</div></div><div class="selector"><button class="active">Balanced</button><button>Speed first</button><button>Concept first</button></div></div>
+ <div class="grid g3">
+  <div class="strategy recommended"><span class="tag good">Recommended now</span><h3>Last-digit cycles</h3>
+   <div class="bars">
+    <div class="barrow"><span>Concept value</span><div class="microbar"><span style="width:80%"></span></div><b>80</b></div>
+    <div class="barrow"><span>Contest speed</span><div class="microbar"><span style="width:92%"></span></div><b>92</b></div>
+    <div class="barrow"><span>Student readiness</span><div class="microbar"><span style="width:76%"></span></div><b>76</b></div>
+   </div><p class="muted">Direct, visible structure, and fast for modulus 10. Best balanced choice.</p>
+  </div>
+  <div class="strategy"><h3>Euler-style reduction</h3>
+   <div class="bars">
+    <div class="barrow"><span>Concept value</span><div class="microbar"><span style="width:74%"></span></div><b>74</b></div>
+    <div class="barrow"><span>Contest speed</span><div class="microbar"><span style="width:65%"></span></div><b>65</b></div>
+    <div class="barrow"><span>Student readiness</span><div class="microbar"><span style="width:58%"></span></div><b>58</b></div>
+   </div><p class="muted">More general, but requires theorem conditions and is unnecessary here.</p>
+  </div>
+  <div class="strategy"><h3>Repeated squaring</h3>
+   <div class="bars">
+    <div class="barrow"><span>Concept value</span><div class="microbar"><span style="width:69%"></span></div><b>69</b></div>
+    <div class="barrow"><span>Contest speed</span><div class="microbar"><span style="width:48%"></span></div><b>48</b></div>
+    <div class="barrow"><span>Student readiness</span><div class="microbar"><span style="width:82%"></span></div><b>82</b></div>
+   </div><p class="muted">General computational method; higher arithmetic load for this problem.</p>
+  </div>
+ </div>
+</section>
+
+<section id="history" class="screen">
+ <div class="card">
+  <div class="row between"><h2>Paired learning history</h2><button class="btn secondary">Export report</button></div>
+  <table><thead><tr><th>Date</th><th>Problem / concept</th><th>Concept evidence</th><th>Speed evidence</th><th>Next action</th></tr></thead><tbody>
+   <tr><td>Jul 10</td><td>Power remainder</td><td>Justified complete cycle after one prompt</td><td>74 sec to identify strategy</td><td>3 recognition sprints</td></tr>
+   <tr><td>Jul 8</td><td>Chessboard invariant</td><td>Started casework; invariant not understood</td><td>Committed quickly to wrong path</td><td>Concept repair, no timing</td></tr>
+   <tr><td>Jul 6</td><td>Similar triangles</td><td>Independent correspondence proof</td><td>42 sec recognition, 5:20 total</td><td>Mixed timed transfer</td></tr>
+  </tbody></table>
+ </div>
+ <div class="grid g2" style="margin-top:15px">
+  <div class="card"><h3>Concept trend</h3><div class="note">Explanations are becoming more precise, but transfer to unfamiliar representations is still inconsistent.</div></div>
+  <div class="card"><h3>Speed trend</h3><div class="note">Execution after strategy selection is improving. Most remaining time loss occurs before commitment or during path switching.</div></div>
+ </div>
+</section>
+
+<section id="plan" class="screen">
+ <div class="grid g2">
+  <div class="card"><h2>Adaptive weekly plan</h2>
+   <div class="list">
+    <div class="item"><b>Monday · Build</b><div class="muted">2 untimed problems; explain triggers, conditions, and alternatives</div><span class="tag concept">Concept 70%</span> <span class="tag speed">Speed 30%</span></div>
+    <div class="item"><b>Tuesday · Compress</b><div class="muted">Redo Monday’s structures with shorter written plans</div><span class="tag concept">Concept 40%</span> <span class="tag speed">Speed 60%</span></div>
+    <div class="item"><b>Thursday · Recognition sprint</b><div class="muted">10 problem openings; choose strategy without solving fully</div><span class="tag speed">Speed 80%</span></div>
+    <div class="item"><b>Saturday · Mixed contest set</b><div class="muted">Timed set plus post-set concept reconstruction</div><span class="tag concept">Concept 50%</span> <span class="tag speed">Speed 50%</span></div>
+   </div>
+  </div>
+  <div class="card"><h2>Planning policy</h2>
+   <table>
+    <tr><td>Low concept, low speed</td><td>Teach concept first; do not reward guessing quickly</td></tr>
+    <tr><td>High concept, low speed</td><td>Recognition drills, compression, timed repetition</td></tr>
+    <tr><td>Low concept, high speed</td><td>Slow down; require justification and transfer</td></tr>
+    <tr><td>High concept, high speed</td><td>Harder problems, alternate paths, contest simulation</td></tr>
+   </table>
+   <div class="note" style="margin-top:13px">The application never interprets speed alone as mastery and never interprets untimed explanation alone as contest readiness.</div>
+  </div>
+ </div>
+</section>
+
+</div></main></div>
+<script>
+const titles={home:"Dual-track dashboard",practice:"Dual-mode guided practice",trackers:"Concept and speed trackers",strategy:"Strategy comparison",history:"Paired learning history",plan:"Adaptive training plan"};
+function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelector('[data-page="'+id+'"]').classList.add('active');document.getElementById('title').textContent=titles[id];scrollTo(0,0)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function mode(btn,m){document.querySelectorAll('.modebar button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ const cm=document.getElementById('coachMode'),ct=document.getElementById('coachText'),t=document.getElementById('timer'),p=document.getElementById('modePurpose');
+ if(m==='explore'){cm.className='tag concept';cm.textContent='Explore mode';t.textContent='Untimed';p.textContent='Optimize for explanation, transfer, and correct conditions.';ct.textContent='You found the useful strategy. What exactly must repeat—the last value alone, or the complete multiplication state? Explain why the fifth last digit confirms the cycle.'}
+ if(m==='compress'){cm.className='tag speed';cm.textContent='Compress mode';t.textContent='Target: 2 min';p.textContent='Turn a fully understood solution into a short reusable decision procedure.';ct.textContent='Compress your method into three actions: recognize the trigger, execute the cycle, verify the residue. Which details can be removed without losing correctness?'}
+ if(m==='contest'){cm.className='tag speed';cm.textContent='Contest mode';t.textContent='01:42 remaining';p.textContent='Optimize recognition, commitment, accurate execution, and timed verification.';ct.textContent='You have enough information to commit. State the cycle length, reduce 2026, and calculate. Do not explore an alternate method unless this path fails.'}
+ if(m==='reflect'){cm.className='tag concept';cm.textContent='Reflection mode';t.textContent='Timer stopped';p.textContent='Compare what was mathematically strongest with what was fastest.';ct.textContent='Why was the cycle method both faster and clearer here? Give one different problem where Euler reduction might become the better choice.'}
+}
+function submitThinking(){document.getElementById('coachText').innerHTML='<b>Concept update:</b> You correctly identified that the state must return to its starting residue. <br><br><b>Speed update:</b> Save the trigger: “large exponent + small modulus → test a short residue cycle.” Now reduce 2026 modulo 4.'}
+</script>
+</body></html>
