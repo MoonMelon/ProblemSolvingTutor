@@ -90,34 +90,17 @@ export default function Practice() {
           <div className="card">
             <div className="row between">
               <h3>Your reasoning</h3>
-              <span className="pill">Autosaved</span>
-            </div>
-            <div className="timeline">
-              <div className="step concept">
-                <strong>Concept evidence</strong>
-                <div>You proposed looking for a repeating last-digit pattern.</div>
-                <span className="tag good">Correct structural choice</span>
-              </div>
-              <div className="step speed">
-                <strong>Speed evidence</strong>
-                <div>Strategy selected after 74 seconds.</div>
-                <span className="tag warn">Target: 40 seconds</span>
-              </div>
-              <div className="step">
-                <strong>Current step</strong>
-                <div>Explain what proves that the cycle is complete.</div>
-              </div>
             </div>
             <textarea
               value={thinking}
               onChange={e => setThinking(e.target.value)}
             />
             <div className="row between" style={{ marginTop: 10 }}>
-              <span className="muted">Voice · scan · pencil also available</span>
               <button className="btn" onClick={() => setSubmitted(true)}>
                 Submit thinking
               </button>
             </div>
+            
           </div>
 
           {submitted && (
@@ -131,37 +114,8 @@ export default function Practice() {
             </div>
           )}
 
+          {/* ── Coach panel (stacked below textarea) ── */}
           <div className="card" style={{ marginTop: 14 }}>
-            <div className="row between">
-              <h3>Two-way coach decision</h3>
-              <div>
-                <span className="tag concept">Concept</span>{' '}
-                <span className="tag speed">Speed</span>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr><th>Evidence</th><th>Current conclusion</th><th>Next intervention</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Concept</td>
-                  <td>Understands periodicity but must justify closure</td>
-                  <td>Ask for proof of restart</td>
-                </tr>
-                <tr>
-                  <td>Speed</td>
-                  <td>Correct path chosen too slowly</td>
-                  <td>Create a trigger phrase after solving</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ── Coach panel (sticky) ── */}
-        <div className="coachcol">
-          <div className="card sticky-col">
             <div className="row between">
               <h3>Thinking Coach</h3>
               <span className={`tag ${m.type}`}>{m.label}</span>
@@ -187,6 +141,7 @@ export default function Practice() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )
