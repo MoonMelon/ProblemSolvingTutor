@@ -28,7 +28,7 @@ const STRATEGIES = [
   },
 ]
 
-const FOCUS_OPTIONS = ['Balanced', 'Speed first', 'Concept first']
+const FOCUS_OPTIONS = ['Balanced']
 
 function BarRow({ label, value }) {
   return (
@@ -82,24 +82,6 @@ export default function Strategy() {
         ))}
       </div>
 
-      {/* ── Strategy selection note ── */}
-      <div className="card" style={{ marginTop: 16 }}>
-        <h3>How to read these scores</h3>
-        <div className="grid g3">
-          <div>
-            <div className="label">Concept value</div>
-            <p className="muted">How much deep structural understanding this method builds.</p>
-          </div>
-          <div>
-            <div className="label">Contest speed</div>
-            <p className="muted">How fast and reliable this path is under timed conditions.</p>
-          </div>
-          <div>
-            <div className="label">Student readiness</div>
-            <p className="muted">Whether Maya currently has the prerequisite fluency to execute this method.</p>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
