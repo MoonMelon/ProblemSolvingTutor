@@ -1,5 +1,5 @@
 const CONCEPT_ROWS = [
-  { d: 'Concept recognition',   s: 76},
+  { d: 'Concept recognition',   s: 77},
   { d: 'Why / justification',   s: 68},
   { d: 'Transfer',              s: 59},
   { d: 'Alternative comparison', s: 73},
