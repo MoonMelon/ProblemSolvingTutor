@@ -47,24 +47,6 @@ export default function Dashboard({ onNavigate }) {
         </div>
       </div>
 
-      {/* ── Bottleneck + readiness cards ── */}
-      <div className="grid g3" style={{ marginTop: 16 }}>
-        <div className="card">
-          <div className="label">Concept bottleneck</div>
-          <div className="metric" style={{ fontSize: 20 }}>Invariant selection</div>
-          <span className="tag concept">Needs transfer</span>
-        </div>
-        <div className="card">
-          <div className="label">Speed bottleneck</div>
-          <div className="metric" style={{ fontSize: 20 }}>Late commitment</div>
-          <span className="tag speed">+2.4 min/problem</span>
-        </div>
-        <div className="card">
-          <div className="label">Balanced readiness</div>
-          <div className="metric">64</div>
-          <p className="muted" style={{ margin: 0 }}>Useful only as a planning summary</p>
-        </div>
-      </div>
 
       {/* ── Today's workout + coach recommendation ── */}
       <div className="grid g2" style={{ marginTop: 16 }}>
@@ -86,23 +68,17 @@ export default function Dashboard({ onNavigate }) {
               <strong> State your contest trigger</strong>
               <div className="muted">"Large exponent + small modulus → test residue cycle."</div>
             </div>
+            <div className="item">
+              <span className="tag coach">Coach Recs</span>
+              <strong> Coach recommendation</strong>
+              <div className="muted">
+                You understand modular cycles when prompted, but strategy recognition is slow.
+                Do one deep explanation first, then repeat the same structural pattern under time pressure.
+            </div>
+            </div>
           </div>
         </div>
 
-        <div className="card">
-          <h3>Coach recommendation</h3>
-          <div className="note">
-            You understand modular cycles when prompted, but strategy recognition is slow.
-            Do one deep explanation first, then repeat the same structural pattern under time pressure.
-          </div>
-          <table style={{ marginTop: 12 }}>
-            <tbody>
-              <tr><td>Deep-work share</td><td><strong>45%</strong></td></tr>
-              <tr><td>Timed-work share</td><td><strong>40%</strong></td></tr>
-              <tr><td>Reflection share</td><td><strong>15%</strong></td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   )

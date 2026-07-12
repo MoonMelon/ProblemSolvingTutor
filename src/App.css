@@ -15,13 +15,16 @@
   --speed: #e87518;
   --speed-bg: #fff1e4;
   --speed-border: #ffd1aa;
-  --good: #16825d;
+  --good: #168231;
   --good-bg: #e8f7f0;
   --good-border: #b8e8d2;
   --warn: #a36500;
   --warn-bg: #fff6dd;
   --warn-border: #f3d486;
   --bad: #b42318;
+  --coach: #006181;
+  --coach-bg: #d4f4ff;
+  --coach-border: #5ad6ff;
 
   --sidebar-bg: #101827;
   --sidebar-active: #253149;
@@ -268,6 +271,7 @@ p { margin: 0 0 8px; }
 .tag.good    { background: var(--good-bg);    color: var(--good); border-color: var(--good-border); }
 .tag.warn    { background: var(--warn-bg);    color: var(--warn); border-color: var(--warn-border); }
 .tag.primary { background: var(--primary-bg); color: #1e3fb0; border-color: var(--primary-border); }
+.tag.coach { background: var(--coach-bg); color: var(--coach); border-color: var(--coach-border); }
 
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn {
