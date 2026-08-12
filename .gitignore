@@ -1,2 +1,28 @@
-node_modules
+# ── Secrets — NEVER commit these ──────────────────────────────
+backend/.env
 backend/secrets/
+**/*serviceAccount*.json
+**/*firebase*.json
+!firebase.json
+
+# ── Python ─────────────────────────────────────────────────────
+backend/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+*.egg-info/
+.Python
+
+# ── Node / frontend ────────────────────────────────────────────
+node_modules/
+dist/
+.cache/
+
+# ── macOS ──────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+
+# ── Editor ─────────────────────────────────────────────────────
+.vscode/settings.json
+*.swp
