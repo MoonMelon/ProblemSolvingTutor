@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { ArrowRightIcon, RotateCCWIcon, BookOpenIcon } from './Icons.jsx'
+import { loadCompleted, saveCompleted } from '../pages/ProblemLibrary.jsx'
 
 export default function Completion({ navigate, ctx }) {
   const title   = ctx.title   || ctx.problem?.title || 'Problem'
@@ -9,6 +11,16 @@ export default function Completion({ navigate, ctx }) {
     : ctx.badge === 'supplied'
     ? 'Solution supplied'
     : 'AI analyzed'
+
+  // Auto-mark the problem as done in localStorage
+  useEffect(() => {
+    const id = ctx.problem?.id
+    if (id != null) {
+      const set = loadCompleted()
+      set.add(id)
+      saveCompleted(set)
+    }
+  }, [])   // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="page">

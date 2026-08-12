@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon, MicIcon, ImageIcon } from './Icons.jsx'
+import { analyzeAttempt } from '../api.js'
 
 function getProblemStatement(ctx) {
   if (ctx.source === 'library') return ctx.problem?.statement || ''
@@ -14,12 +15,29 @@ function getProblemTitle(ctx) {
 export default function AttemptEntry({ navigate, ctx }) {
   const [tab, setTab]         = useState('type')
   const [attempt, setAttempt] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState(null)
 
   const statement = getProblemStatement(ctx)
   const title     = getProblemTitle(ctx)
 
-  function submit() {
-    navigate('workspace', { attempt, title })
+  async function submit() {
+    setLoading(true)
+    setError(null)
+    try {
+      const aiResponse = await analyzeAttempt({
+        problem:          statement,
+        studentAttempt:   attempt,
+        officialSolution: ctx.solutionText || null,
+      })
+      navigate('workspace', { attempt, title, aiResponse })
+    } catch (err) {
+      console.error(err)
+      setError('Could not reach the backend. Starting without AI analysis.')
+      navigate('workspace', { attempt, title })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -100,6 +118,9 @@ export default function AttemptEntry({ navigate, ctx }) {
       </div>
 
       {/* Submit */}
+      {error && (
+        <div className="notice notice--warn mt-20">{error}</div>
+      )}
       <div className="flex justify-between items-center mt-32">
         <p className="body-sm" style={{ maxWidth: 320 }}>
           Don't worry if your attempt is incomplete. The AI will work with whatever you have.
@@ -107,10 +128,10 @@ export default function AttemptEntry({ navigate, ctx }) {
         <button
           className="btn btn--primary btn--lg"
           onClick={submit}
-          disabled={tab === 'type' && attempt.trim().length === 0}
+          disabled={loading || (tab === 'type' && attempt.trim().length === 0)}
         >
-          Submit my attempt
-          <ArrowRightIcon size={17} />
+          {loading ? 'Analyzing…' : 'Submit my attempt'}
+          {!loading && <ArrowRightIcon size={17} />}
         </button>
       </div>
     </div>
